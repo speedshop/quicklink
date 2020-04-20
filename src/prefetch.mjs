@@ -22,20 +22,22 @@
  * Examples of features include `prefetch` and `preload`.
  * @return {Boolean} whether the feature is supported
  */
-function hasPrefetch(link) {
+function hasPreload(link) {
   link = document.createElement('link');
-  return link.relList && link.relList.supports && link.relList.supports('prefetch');
+  return link.relList && link.relList.supports && link.relList.supports('preload');
 }
 
 /**
- * Fetches a given URL using `<link rel=prefetch>`
+ * Fetches a given URL using `<link rel=preload>`
  * @param {string} url - the URL to fetch
  * @return {Object} a Promise
  */
 function viaDOM(url) {
   return new Promise((res, rej, link) => {
     link = document.createElement(`link`);
-    link.rel = `prefetch`;
+    link.rel = `preload`;
+    link.crossOrigin = true;
+    link.as = `fetch`;
     link.href = url;
 
     link.onload = res;
@@ -81,4 +83,4 @@ export function priority(url) {
   return window.fetch ? fetch(url, {credentials: `include`}) : viaXHR(url);
 }
 
-export const supported = hasPrefetch() ? viaDOM : viaXHR;
+export const supported = hasPreload() ? viaDOM : viaXHR;
